@@ -1,2 +1,3 @@
-target
-neardev
+contract/target
+contract/neardev
+frontend/node_modules

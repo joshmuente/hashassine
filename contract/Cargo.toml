@@ -1,5 +1,5 @@
 [package]
-name = "otter-hash"
+name = "hashassine"
 version = "0.1.0"
 authors = ["Josh Münte <josh.muente@tutanota.com>"]
 edition = "2018"

@@ -1,0 +1,21 @@
+<img class="bg" src='https://cdnb.artstation.com/p/assets/images/images/017/279/335/original/yousef-charles-turntable.gif?1555345235'>
+<div class="header">
+  <h1>Hashassine</h1>
+</div>
+
+<div class="list">
+  <ul>
+    <li *ngFor="let challenge of challenges | async">
+      <ul (click)="openSolutionPopup()">
+        <li [innerText]="'Hash: ' + challenge[1].hash"></li>
+        <li [innerText]="'Author: ' + challenge[1].added_by"></li>
+        <li [innerText]="'Hash Type: ' + challenge[1].hash_type"></li>
+        <li [innerText]="'Reward: ' + challenge[1].amount + ' $NEAR'"></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<button (click)="hashassine.signIn()">Hi!</button>
+
+<button (click)="hashassine.addChallenge('00fdfe937cd089a57d931727f3172b98c81f760f', 'Sha1').subscribe()">Hi!</button>
