@@ -1,0 +1,11 @@
+
+
+<mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" showFirstLastButtons="true"
+[pageIndex]="pageIndex" aria-label="Select page">
+</mat-paginator>
+<mat-action-list role="list">
+<!-- <mat-list-item role="listitem" *ngFor="let challenge of challenges | async" (click)="openSolutionPopup(challenge[0])">
+    <span matLine [textContent]="'id: ' + challenge[0]"></span>
+    <span matLine [textContent]="'hash: ' + challenge[1].hash"></span>
+</mat-list-item> -->
+</mat-action-list>

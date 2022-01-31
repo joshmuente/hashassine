@@ -1,21 +1,36 @@
-<img class="bg" src='https://cdnb.artstation.com/p/assets/images/images/017/279/335/original/yousef-charles-turntable.gif?1555345235'>
-<div class="header">
-  <h1>Hashassine</h1>
+<div gdColumns="1fr" gdRows="auto 1fr" gdGap="15px" class="main">
+  <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
+    <h1>Hashassine</h1>
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div *ngIf="hashassine.isSignedIn | async; then username else loginButton"></div>
+      <button mat-icon-button (click)="toggleTheme()">
+        <mat-icon [textContent]="document.body.classList.contains('theme-alternate') ? 'dark_mode' : 'light_mode'">
+          light_mode</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <div gdColumns="1fr 1fr" gdRows="auto" gdGap="15px">
+    <mat-card role="section">
+      <mat-card-title>Hashes</mat-card-title>
+      <mat-card-content>
+        <app-hash-list></app-hash-list>
+      </mat-card-content>
+    </mat-card>
+    <mat-card role="section">
+      <mat-card-title>Yours</mat-card-title>
+      <mat-card-content>
+        <app-profile></app-profile>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
 
-<div class="list">
-  <ul>
-    <li *ngFor="let challenge of challenges | async">
-      <ul (click)="openSolutionPopup()">
-        <li [innerText]="'Hash: ' + challenge[1].hash"></li>
-        <li [innerText]="'Author: ' + challenge[1].added_by"></li>
-        <li [innerText]="'Hash Type: ' + challenge[1].hash_type"></li>
-        <li [innerText]="'Reward: ' + challenge[1].amount + ' $NEAR'"></li>
-      </ul>
-    </li>
-  </ul>
-</div>
+<ng-template #username>
+  <button mat-stroked-button (click)="hashassine.signOut.subscribe()"
+    [textContent]="(hashassine.accounId | async)  ? (hashassine.accounId | async) : 'loading...'">loading...</button>
+</ng-template>
 
-<button (click)="hashassine.signIn()">Hi!</button>
-
-<button (click)="hashassine.addChallenge('00fdfe937cd089a57d931727f3172b98c81f760f', 'Sha1').subscribe()">Hi!</button>
+<ng-template #loginButton>
+  <button mat-raised-button (click)="hashassine.signIn.subscribe()">Login</button>
+</ng-template>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as nearAPI from "near-api-js";
-import { from, map, mergeMap, Observable, shareReplay, tap } from 'rxjs';
+import { WalletAccount } from 'near-api-js';
+import { BehaviorSubject, from, interval, map, mergeMap, Observable, shareReplay, tap, zip } from 'rxjs';
 
 const nearConfig = {
   headers: {},
@@ -14,19 +15,39 @@ const nearConfig = {
   providedIn: 'root'
 })
 export class NearService {
-  private connection = from(nearAPI.connect({
+  constructor() {
+    this.isSignedIn.subscribe(console.log)
+  }
+  private connect = from(nearAPI.connect({
     deps: {
       keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore()
     },
     ...nearConfig
-  }))
+  }));
 
-  public connect(): Observable<nearAPI.WalletConnection> {
-    return this.connection.pipe(
-      map((connection) => new nearAPI.WalletConnection(connection, "app")),
-      tap(() => {console.log("near connect")}),
-      shareReplay()
-    )
-  }
+  public wallet = this.connect.pipe(
+    map((connection) => new nearAPI.WalletConnection(connection, "app")),
+    tap((connection) => {
+      this.isSignedIn.next(connection.isSignedIn()),
+      this.accounId.next(connection.getAccountId())
+    })
+  );
+
+  public signIn = this.wallet.pipe(
+    mergeMap(wallet => wallet.requestSignIn("otter-hash.joshmuente.testnet")),
+    tap(() => {
+      this.isSignedIn.next(true)
+    })
+  )
+
+  public signOut = this.wallet.pipe(
+    map(wallet => wallet.signOut()),
+    tap(() => {
+      this.isSignedIn.next(false)
+    })
+  )
+
+  public isSignedIn = new BehaviorSubject(false);
+  public accounId = new BehaviorSubject(null);
 
 }

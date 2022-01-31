@@ -1,78 +1,8 @@
-@font-face {
-  font-family: assassine;
-  src: url("/assets/assassine.ttf") format("truetype");
+.main {
+  padding: 15px;
+  box-sizing: border-box;
+  height: 100vh;
 }
-
-h1 {
-  font-family: assassine;
-  display: inline-block;
-  font-size: 70px;
-  animation: glow 2s ease-in-out;
-  animation-fill-mode: forwards;
-}
-
-li {
-  list-style-type: none;
-
-}
-
-ul {
-    padding: 10px;
-}
-li, ul {
-    margin: 0;
-}
-
-.bg {
-  position: fixed;
-  opacity: 0.2;
-  z-index: -1;
-  width: 100%;
-}
-
-.header {
-  width: 100%;
-  text-align: center;
-  position: relative;
-
-  img {
-    z-index: -1;
-    position: absolute;
-    width: 330px;
-    left: 50%;
-    top: 50%;
-    transform: translateX(-50%);
-
-  }
-}
-
-.bar {
-  margin-bottom: 30px;
-
-  button {
-    min-width: 100px;
-    min-height: 30px;
-  }
-}
-
-.list {
-    margin: 0 10%;
-  border: 2px solid white;
-    text-align: center;
-  >ul {
-    display: inline-block;
-    >li {
-    display: inline-block;
-
-      margin: 20px;
-      transition: .5s;
-      cursor: pointer;
-      position: relative;
-
-    }
-  }
-}
-
 
 @keyframes glow {
   0% {

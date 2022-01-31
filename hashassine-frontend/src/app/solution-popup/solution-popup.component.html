@@ -1,6 +1,11 @@
-<mat-dialog-content>
-    {{message}}
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-<button mat-raised-button color="primary" mat-dialog-close tabindex="-1"></button>
-</mat-dialog-actions> 
+<form (ngSubmit)="submit()" [formGroup]="dialogForm">
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label form="solution">Solution</mat-label>
+      <input name="solution" formControlName="solution" matInput placeholder="Hash">
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button type="submit" mat-button mat-dialog-close tabindex="-1">Submit</button>
+  </mat-dialog-actions>
+</form>
