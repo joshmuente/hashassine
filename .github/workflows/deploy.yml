@@ -18,7 +18,7 @@ jobs:
       - run: mkdir -p ~/.near-credentials/testnet
       - run: echo $TESTNET_PRIV_KEY > ~/.near-credentials/testnet/hashassine.testnet.json
       - run: make contract/build
-      - run: contract/deploy-testnet
+      - run: make contract/deploy-testnet
 
   frontend:
     runs-on: ubuntu-latest
