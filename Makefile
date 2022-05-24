@@ -8,7 +8,7 @@ contract/build:
 
 .PHONY: contract/deploy-testnet
 contract/deploy-testnet:
-	cd contract && near deploy --accountId hashassine.testnet --wasmFile target/wasm32-unknown-unknown/release/hashassine.wasm
+	cd contract && near deploy --accountId hashassine.testnet --wasmFile target/wasm32-unknown-unknown/release/hashassine.wasm --force
 
 .PHONY: frontend/build
 frontend/build:
