@@ -10,14 +10,14 @@
     </div>
   </mat-toolbar>
 
-  <div gdColumns="1fr 1fr" gdRows="auto" gdGap="15px">
+  <div gdColumns="1fr auto" gdRows="auto" gdGap="15px">
     <mat-card role="section">
       <mat-card-title>Hashes</mat-card-title>
       <mat-card-content>
         <app-hash-list></app-hash-list>
       </mat-card-content>
     </mat-card>
-    <mat-card role="section" fxLayout="column">
+    <mat-card role="section" fxLayout="column" *ngIf="hashassine.isSignedIn | async">
       <mat-card-title>Your Hashes</mat-card-title>
       <mat-card-content>
         <app-profile></app-profile>

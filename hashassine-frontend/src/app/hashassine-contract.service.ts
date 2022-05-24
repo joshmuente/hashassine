@@ -25,6 +25,7 @@ export class HashassineContractService extends NearService {
   }
 
   public addChallenge(hash: string, hashType: "Md5" | "Sha1") {
+    console.log(hash, hashType)
     return this.contract.pipe(
       mergeMap(contract => contract.add_challenge({ hash: hash, hash_type: hashType }))
     )

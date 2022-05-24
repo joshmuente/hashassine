@@ -20,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import { AddHashPopupComponent } from './add-hash-popup/add-hash-popup.component';
+import {MatSelectModule} from '@angular/material/select'; 
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { AddHashPopupComponent } from './add-hash-popup/add-hash-popup.component
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatSelectModule
   ],
   entryComponents: [SolutionPopupComponent],
   bootstrap: [AppComponent]

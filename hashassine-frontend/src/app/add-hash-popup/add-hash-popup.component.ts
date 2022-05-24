@@ -9,9 +9,11 @@ import { HashassineContractService } from '../hashassine-contract.service';
 })
 export class AddHashPopupComponent implements OnInit {
 
-  dialogForm = this.formBuilder.group({
+  public hashTypes = ["Md5", "Sha1"];
+
+  public dialogForm = this.formBuilder.group({
     hash: "",
-    type: ["Md5", "Sha1"]
+    hashType: ""
   });
 
   constructor(private formBuilder: FormBuilder,
