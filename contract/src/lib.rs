@@ -107,6 +107,10 @@ impl Contract {
             .collect()
     }
 
+    pub fn get_challenge_amount(&self) -> u64 {
+        return self.challenge_list.len()
+    }
+
     pub fn claim_reward(&mut self, id: ChallengeId, solution: String) -> Promise {
         let challenge: Challenge = self.get_challenge(id);
         Contract::assert_solution_correct(challenge.clone(), solution);

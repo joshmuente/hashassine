@@ -11,24 +11,21 @@ import { SolutionPopupComponent } from '../solution-popup/solution-popup.compone
 })
 export class HashListComponent implements OnInit {
 
-  public challenges = this.hashassine.getAddedChallenges(0, 10);
+  constructor(public hashassine: HashassineContractService, private dialog: MatDialog) { }
 
-  constructor(private hashassine: HashassineContractService, private dialog: MatDialog) { }
-
-  public length = 500;
+  public length = this.hashassine.getChallengeAmount();
   public pageSize = 10;
   public pageIndex = 0;
 
   handlePageEvent(event: PageEvent) {
-    this.length = event.length;
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
     this.updateList(this.pageIndex);
   }
 
-  updateList(index: number) {
+  public updateList(index: number) {
     const num = index * this.pageSize;
-    this.challenges = this.hashassine.getAddedChallenges(num, num + 10);
+    this.hashassine.getAddedChallenges(num, num + 10);
   }
 
   openSolutionPopup(id: number) {

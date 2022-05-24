@@ -12,8 +12,8 @@ export class AddHashPopupComponent implements OnInit {
   public hashTypes = ["Md5", "Sha1"];
 
   public dialogForm = this.formBuilder.group({
-    hash: "",
-    hashType: ""
+    hash: [""],
+    hashType: [""]
   });
 
   constructor(private formBuilder: FormBuilder,

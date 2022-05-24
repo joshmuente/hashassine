@@ -1,14 +1,14 @@
 <form (ngSubmit)="submit()" [formGroup]="dialogForm">
     <mat-dialog-content fxLayout="column">
         <mat-form-field>
-            <mat-label form="hash">Hash</mat-label>
+            <mat-label>Hash</mat-label>
             <input name="hash" formControlName="hash" matInput placeholder="Hash">
         </mat-form-field>
         <mat-form-field>
             <mat-label>Hash Type</mat-label>
-            <mat-select form="hash">
+            <mat-select formControlName="hashType">
                 <mat-option *ngFor="let hashType of hashTypes" [value]="hashType">
-                    {{hashType}}
+                    {{ hashType }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
