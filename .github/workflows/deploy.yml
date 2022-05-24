@@ -1,0 +1,26 @@
+name: deploy
+on: [push]
+env: 
+    TESTNET_PRIV_KEY: ${{ secrets.TESTNET_PRIV_KEY }}
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - uses: actions-rs/install@v0.1
+      - run: npm install -g near-cli
+      - run: mkdir -p ~/.near-credentials/testnet
+      - run: echo $TESTNET_PRIV_KEY > ~/.near-credentials/testnet/hashassine.testnet.json
+      - run: make contract/build
+      - run: contract/deploy-testnet
+
+  frontend:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+    - run: cd hashassine-frontend && npm ci
+    - run: cd hashassine-frontend && npm run ng build --prod
