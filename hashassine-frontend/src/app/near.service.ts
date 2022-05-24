@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as nearAPI from "near-api-js";
 import { WalletAccount } from 'near-api-js';
 import { BehaviorSubject, from, interval, map, mergeMap, Observable, shareReplay, tap, zip } from 'rxjs';
-
+import { environment } from '../environments/environment';
 const nearConfig = {
   headers: {},
   networkId: 'testnet',
@@ -34,7 +34,7 @@ export class NearService {
   );
 
   public signIn = this.wallet.pipe(
-    mergeMap(wallet => wallet.requestSignIn("otter-hash.joshmuente.testnet")),
+    mergeMap(wallet => wallet.requestSignIn(environment.contract)),
     tap(() => {
       this.isSignedIn.next(true)
     })
