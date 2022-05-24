@@ -4,7 +4,9 @@ contract/build:
 
 .PHONY: contract/deploy-testnet
 contract/deploy-testnet:
-	cd contract && near deploy --accountId hashassine.testnet --wasmFile target/wasm32-unknown-unknown/release/hashassine.wasm --force
+	-near delete app.hashassine.testnet hashassine.testnet --masterAccount hashassine.testnet
+	near create-account --masterAccount hashassine.testnet app.hashassine.testnet
+	cd contract && near deploy --accountId app.hashassine.testnet --masterAccount hashassine.testnet --initFunction "new" --initArgs "{}" --wasmFile target/wasm32-unknown-unknown/release/hashassine.wasm
 
 .PHONY: frontend/build
 frontend/build:
