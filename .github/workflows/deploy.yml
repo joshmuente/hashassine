@@ -18,9 +18,11 @@ jobs:
       - run: contract/deploy-testnet
 
   frontend:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: '14'
-    - run: cd hashassine-frontend && npm ci
-    - run: cd hashassine-frontend && npm run ng build --prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: cd hashassine-frontend && npm ci
+      - run: cd hashassine-frontend && npm run ng build --prod
