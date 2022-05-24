@@ -12,7 +12,8 @@ jobs:
           node-version: '14'
       - uses: actions-rs/toolchain@v1
         with:
-            target: wasm32-unknown-unknown
+          toolchain: stable
+          target: wasm32-unknown-unknown
       - run: npm install -g near-cli
       - run: mkdir -p ~/.near-credentials/testnet
       - run: echo $TESTNET_PRIV_KEY > ~/.near-credentials/testnet/hashassine.testnet.json
