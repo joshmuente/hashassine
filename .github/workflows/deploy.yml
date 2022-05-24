@@ -23,9 +23,16 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     steps:
+      - name: build
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
+      with:
           node-version: '14'
       - run: cd hashassine-frontend && npm ci
-      - run: cd hashassine-frontend && npm run ng build --prod
+      - run: make frontend/build
+
+      - name: deploy
+      - uses: JamesIves/github-pages-deploy-action@v4.3.3
+      with:
+        branch: gh-pages
+        folder: hashassine-frontend/dist
