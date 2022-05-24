@@ -19,6 +19,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
+import { AddHashPopupComponent } from './add-hash-popup/add-hash-popup.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {MatIconModule} from '@angular/material/icon';
     AppComponent,
     SolutionPopupComponent,
     HashListComponent,
-    ProfileComponent
+    ProfileComponent,
+    AddHashPopupComponent
   ],
   imports: [
     MatIconModule,

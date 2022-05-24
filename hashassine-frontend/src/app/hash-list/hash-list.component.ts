@@ -32,12 +32,12 @@ export class HashListComponent implements OnInit {
   }
 
   openSolutionPopup(id: number) {
-    const dialogRef = this.dialog.open(SolutionPopupComponent,{
-      data:{
+    const dialogRef = this.dialog.open(SolutionPopupComponent, {
+      data: {
         id: id
       },
     });
-}
+  }
 
   ngOnInit(): void {
   }
