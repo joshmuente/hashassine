@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  contract: 'app.hashassine.testnet'
+  contract: 'hashassine.testnet'
 };
 
 /*
