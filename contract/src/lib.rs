@@ -26,7 +26,7 @@ pub struct Contract {
     owner_id: AccountId,
     challenge_counter: u128,
     challenge_list: UnorderedMap<ChallengeId, Challenge>,
-    challenges_from_user: UnorderedMap<AccountId, ChallengeId>,
+    challenges_from_user: UnorderedMap<AccountId, Vec<ChallengeId>>,
 }
 
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, Clone)]
@@ -57,6 +57,7 @@ impl Contract {
         let amount = env::attached_deposit();
         let added_by = env::predecessor_account_id();
         let id: ChallengeId = self.challenge_counter + 1;
+        let added_by_c = added_by.clone();
         self.challenge_list.insert(
             &id,
             &Challenge {
@@ -66,6 +67,16 @@ impl Contract {
                 amount,
             },
         );
+        match self.challenges_from_user.get(&added_by_c) {
+            Some(mut value) => {
+                value.push(id);
+                self.challenges_from_user.insert(&added_by_c, &value);
+            },
+            None => {
+                let data_vec = vec![id];
+                self.challenges_from_user.insert(&added_by_c, &data_vec);
+            }
+        }
         self.challenge_counter = id;
     }
 
@@ -95,6 +106,13 @@ impl Contract {
             env::predecessor_account_id() == challenge.added_by
                 || env::predecessor_account_id() == self.owner_id
         );
+        match self.challenges_from_user.get(&env::predecessor_account_id()) {
+            Some(mut challenges) => {
+                challenges.retain(|&x| x != id);
+                self.challenges_from_user.insert(&challenge.added_by, &challenges);
+            },
+            None{} => {}
+        }
         self.challenge_list.remove(&id);
         Contract::pay(challenge.added_by, challenge.amount)
     }
@@ -115,6 +133,13 @@ impl Contract {
         let challenge: Challenge = self.get_challenge(id);
         Contract::assert_solution_correct(challenge.clone(), solution);
         self.challenge_list.remove(&id);
+        match self.challenges_from_user.get(&challenge.added_by) {
+            Some(mut challenges) => {
+                challenges.retain(|&x| x != id);
+                self.challenges_from_user.insert(&challenge.added_by, &challenges);
+            },
+            None{} => {}
+        }
         Contract::pay(env::predecessor_account_id(), challenge.amount)
     }
 
@@ -124,6 +149,13 @@ impl Contract {
             .get(&id)
             .expect("Challenge ID doesn't exist");
         return challenge;
+    }
+
+    pub fn get_challenges_by_user(&self, account: AccountId) -> Vec<(u128, Challenge)> {
+        match self.challenges_from_user.get(&account) {
+            Some(challenge_ids) => challenge_ids.iter().map(|&x| (x, self.get_challenge(x))).collect(),
+            None => vec![]
+        }
     }
 
     fn hash(string: String, hash_type: HashType) -> String {
@@ -136,6 +168,13 @@ impl Contract {
             }
         };
         return computed_hash;
+    }
+
+    pub fn clear(&mut self) {
+        assert!(env::predecessor_account_id() == self.owner_id);
+        self.challenge_counter = 0;
+        self.challenge_list.clear();
+        self.challenges_from_user.clear()
     }
 
     fn assert_solution_correct(challenge: Challenge, solution: String) {

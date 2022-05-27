@@ -1,8 +1,12 @@
+<div *ngIf="loading$ | async" class="overlay">
+  <mat-spinner></mat-spinner>  
+</div>
+
 <div gdColumns="1fr" gdRows="auto 1fr" gdGap="15px" class="main">
   <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
     <h1>Hashassine</h1>
     <div fxLayout="row" fxLayoutAlign="space-between center">
-      <div *ngIf="hashassine.isSignedIn | async; then username else loginButton"></div>
+      <div *ngIf="hashassine.isLoggedIn | async; then username else loginButton"></div>
       <button mat-icon-button (click)="toggleTheme()">
         <mat-icon [textContent]="document.body.classList.contains('theme-alternate') ? 'dark_mode' : 'light_mode'">
           light_mode</mat-icon>
@@ -10,14 +14,14 @@
     </div>
   </mat-toolbar>
 
-  <div gdColumns="1fr auto" gdRows="auto" gdGap="15px">
+  <div [gdColumns]="(hashassine.isLoggedIn | async) ? '1fr 1fr' : '1fr'" gdRows="auto" gdGap="15px">
     <mat-card role="section">
       <mat-card-title>Hashes</mat-card-title>
       <mat-card-content>
         <app-hash-list></app-hash-list>
       </mat-card-content>
     </mat-card>
-    <mat-card role="section" fxLayout="column" *ngIf="hashassine.isSignedIn | async">
+    <mat-card role="section" fxLayout="column" *ngIf="hashassine.isLoggedIn | async">
       <mat-card-title>Your Hashes</mat-card-title>
       <mat-card-content>
         <app-profile></app-profile>
@@ -30,10 +34,10 @@
 </div>
 
 <ng-template #username>
-  <button mat-stroked-button (click)="hashassine.signOut.subscribe()"
-    [textContent]="(hashassine.accounId | async)  ? (hashassine.accounId | async) : 'loading...'">loading...</button>
+  <button mat-stroked-button (click)="hashassine.signOut()"
+    [textContent]="(nearService.accountId | async)  ? (nearService.accountId | async) : 'loading...'">loading...</button>
 </ng-template>
 
 <ng-template #loginButton>
-  <button mat-raised-button (click)="hashassine.signIn.subscribe()">Login</button>
+  <button mat-raised-button (click)="hashassine.signIn()">Login</button>
 </ng-template>

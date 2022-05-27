@@ -25,7 +25,7 @@ export class SolutionPopupComponent implements OnInit {
   }
 
   public submit(){
-    this.hashassine.submitSolution(this.id, this.dialogForm.value.solution).subscribe()
+    this.hashassine.submitSolution(this.id, this.dialogForm.value.solution)
   }
 
   ngOnInit(): void {

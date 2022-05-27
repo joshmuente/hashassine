@@ -1,8 +1,10 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { combineLatest, merge } from 'rxjs';
 import { AddHashPopupComponent } from './add-hash-popup/add-hash-popup.component';
 import { HashassineContractService } from './hashassine-contract.service';
+import { NearService } from './near.service';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +13,9 @@ import { HashassineContractService } from './hashassine-contract.service';
 })
 
 export class AppComponent {
+  public loading$ = this.hashassine.loading$;
 
-  public challenges = this.hashassine.getAddedChallenges(0, 100);
-
-  constructor(private dialog: MatDialog,public hashassine: HashassineContractService, @Inject(DOCUMENT) public document: Document) {
+  constructor(private dialog: MatDialog, public hashassine: HashassineContractService, @Inject(DOCUMENT) public document: Document, public nearService: NearService) {
     if(localStorage.getItem("theme") == "alternate") {
       this.document.body.classList.toggle("theme-alternate");
     }
@@ -30,6 +31,6 @@ export class AppComponent {
   }
 
   public openAddHashPopup() {
-    this.dialog.open(AddHashPopupComponent);
+    this.dialog.open(AddHashPopupComponent, {width: '40%'});
   }
 }

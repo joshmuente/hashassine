@@ -1,53 +1,51 @@
 import { Injectable } from '@angular/core';
 import * as nearAPI from "near-api-js";
-import { WalletAccount } from 'near-api-js';
-import { BehaviorSubject, from, interval, map, mergeMap, Observable, shareReplay, tap, zip } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, map, mergeMap, Observable, shareReplay, tap } from 'rxjs';
 import { environment } from '../environments/environment';
 const nearConfig = {
-  headers: {},
+  headers: { "Content-Type": "application/json" },
   networkId: 'testnet',
   nodeUrl: 'https://rpc.testnet.near.org',
   walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
+  helperUrl: 'https://helper.testnet.near.org'
 };
 
 @Injectable({
   providedIn: 'root'
 })
 export class NearService {
-  constructor() {
-    this.isSignedIn.subscribe(console.log)
-  }
-  private connect = from(nearAPI.connect({
+  public loading$ = new BehaviorSubject(false);
+  public update$ = new BehaviorSubject(true);
+
+  private near = from(nearAPI.connect({
     deps: {
       keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore()
     },
     ...nearConfig
-  }));
+  }))
 
-  public wallet = this.connect.pipe(
-    map((connection) => new nearAPI.WalletConnection(connection, "app")),
-    tap((connection) => {
-      this.isSignedIn.next(connection.isSignedIn()),
-      this.accounId.next(connection.getAccountId())
-    })
+  public walletConnection = this.near.pipe(
+    map((connection) => new nearAPI.WalletConnection(connection, environment.contract))
   );
 
-  public signIn = this.wallet.pipe(
-    mergeMap(wallet => wallet.requestSignIn(environment.contract)),
-    tap(() => {
-      this.isSignedIn.next(true)
-    })
+  public accountId: Observable<String> = combineLatest([this.walletConnection, this.update$]).pipe(
+    map(([walletConnection, update]) => walletConnection.getAccountId()),
+    tap(console.log)
   )
 
-  public signOut = this.wallet.pipe(
-    map(wallet => wallet.signOut()),
-    tap(() => {
-      this.isSignedIn.next(false)
-    })
+  public isLoggedIn = combineLatest([this.walletConnection, this.update$]).pipe(
+    tap(console.log),
+    map(([walletConnection, update]) => walletConnection.isSignedIn()),
   )
 
-  public isSignedIn = new BehaviorSubject(false);
-  public accounId = new BehaviorSubject(null);
-
+  public signOut() {
+    this.loading$.next(true);
+    this.walletConnection.pipe(
+      map(wallet => wallet.signOut())
+    ).subscribe(() => {
+      this.loading$.next(false);
+      this.update$.next(true);
+      window.location.replace(window.location.origin + window.location.pathname);
+    })
+  }
 }

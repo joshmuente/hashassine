@@ -20,7 +20,7 @@ export class AddHashPopupComponent implements OnInit {
     private hashassine: HashassineContractService) { }
 
   public submit(){
-    this.hashassine.addChallenge(this.dialogForm.value.hash, this.dialogForm.value.hashType).subscribe()
+    this.hashassine.addChallenge(this.dialogForm.value.hash, this.dialogForm.value.hashType)
   }
 
   ngOnInit(): void {
