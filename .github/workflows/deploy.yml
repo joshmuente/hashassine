@@ -2,6 +2,7 @@ name: deploy
 on: [push]
 env: 
     TESTNET_PRIV_KEY: ${{ secrets.TESTNET_PRIV_KEY }}
+    TESTNET_APP_PRIV_KEY: ${{ secrets.TESTNET_APP_PRIV_KEY }}
 jobs:
   contract:
     runs-on: ubuntu-latest
