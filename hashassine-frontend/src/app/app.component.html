@@ -6,7 +6,7 @@
   <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
     <h1>Hashassine</h1>
     <div fxLayout="row" fxLayoutAlign="space-between center">
-      <div *ngIf="hashassine.isLoggedIn | async; then username else loginButton"></div>
+      <div *ngIf="nearService.isLoggedIn | async; then username else loginButton"></div>
       <button mat-icon-button (click)="toggleTheme()">
         <mat-icon [textContent]="document.body.classList.contains('theme-alternate') ? 'dark_mode' : 'light_mode'">
           light_mode</mat-icon>
@@ -14,14 +14,14 @@
     </div>
   </mat-toolbar>
 
-  <div [gdColumns]="(hashassine.isLoggedIn | async) ? '1fr 1fr' : '1fr'" gdRows="auto" gdGap="15px">
+  <div [gdColumns]="(nearService.isLoggedIn | async) ? '1fr 1fr' : '1fr'" gdRows="auto" gdGap="15px">
     <mat-card role="section">
       <mat-card-title>Hashes</mat-card-title>
       <mat-card-content>
         <app-hash-list></app-hash-list>
       </mat-card-content>
     </mat-card>
-    <mat-card role="section" fxLayout="column" *ngIf="hashassine.isLoggedIn | async">
+    <mat-card role="section" fxLayout="column" *ngIf="nearService.isLoggedIn | async">
       <mat-card-title>Your Hashes</mat-card-title>
       <mat-card-content>
         <app-profile></app-profile>
@@ -34,7 +34,7 @@
 </div>
 
 <ng-template #username>
-  <button mat-stroked-button (click)="hashassine.signOut()"
+  <button mat-stroked-button (click)="nearService.signOut()"
     [textContent]="(nearService.accountId | async)  ? (nearService.accountId | async) : 'loading...'">loading...</button>
 </ng-template>
 

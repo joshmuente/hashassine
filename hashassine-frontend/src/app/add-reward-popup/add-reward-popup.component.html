@@ -1,0 +1,23 @@
+<form (ngSubmit)="submit()" [formGroup]="dialogForm">
+    <div fxLayout="column">
+        <span>Available in Wallet: <span [textContent]="max | async | toNear"></span><mat-icon class="near-icon" svgIcon="near"></mat-icon></span>
+        <span>Deposited: <span [textContent]="currently_deposited | toNear"></span><mat-icon class="near-icon" svgIcon="near"></mat-icon></span>
+        <mat-form-field>
+            <mat-label form="value">Value</mat-label>
+            <input name="value" matInput [(ngModel)]="outValue" formControlName="outValue" placeholder="Value">
+        </mat-form-field>
+        <mat-slider [(ngModel)]="outValue" [max]="action === 'deposit' ? (max | async | toNear) : currently_deposited | toNear"
+            (input)="onInputChange($event)" [ngModelOptions]="{standalone: true}"></mat-slider>
+        <mat-radio-group fxLayout="row" fxLayoutGap="10px" [(ngModel)]="action" [ngModelOptions]="{standalone: true}">
+            <mat-radio-button [value]="'deposit'">
+                Deposit
+            </mat-radio-button>
+            <mat-radio-button [value]="'withdraw'">
+                Withdraw
+            </mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button type="submit" mat-button mat-dialog-close tabindex="-1">Submit</button>
+    </div>
+</form>

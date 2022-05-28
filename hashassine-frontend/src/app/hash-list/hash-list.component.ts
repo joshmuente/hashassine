@@ -5,6 +5,7 @@ import { HashassineContractService } from '../hashassine-contract.service';
 import { SolutionPopupComponent } from '../solution-popup/solution-popup.component';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { utils } from 'near-api-js';
 
 @Component({
   selector: 'app-hash-list',
@@ -38,6 +39,11 @@ export class HashListComponent implements OnInit {
       },
       width: '40%'
     });
+  }
+
+  convertToNear(amount: number) {
+    let amountStr = amount.toLocaleString('fullwide', {useGrouping:false});
+    return utils.format.formatNearAmount(amountStr);
   }
 
   copyToClipboard(data: string, event: any) {

@@ -11,86 +11,106 @@ interface IHashassine extends Contract {
   add_challenge({ }): Observable<[]>,
   claim_reward({ }): Observable<any>,
   get_challenges_by_user({ }): Observable<any>,
-  remove_challenge({}): Observable<any>
+  remove_challenge({ }): Observable<any>,
+  add_challenge_reward(args: {}, gas?: number, deposit?: string): Observable<any>,
+  remove_challenge_reward(args: {}): Observable<any>
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class HashassineContractService extends NearService {
+export class HashassineContractService {
 
-  constructor() {
-    super();
-  }
+  constructor(private nearService: NearService) { }
 
-  public contract: Observable<IHashassine> = this.walletConnection.pipe(
+  public contract: Observable<IHashassine> = this.nearService.walletConnection.pipe(
     map(walletConnection => {
       return new nearAPI.Contract(
         walletConnection.account(),
         environment.contract,
         {
           viewMethods: ["get_added_challenges", "get_challenge_amount", "get_challenges_by_user"],
-          changeMethods: ["add_challenge", "claim_reward", "remove_challenge"],
+          changeMethods: ["add_challenge", "claim_reward", "remove_challenge", "add_challenge_reward", "remove_challenge_reward"],
         }) as IHashassine;
     })
   )
 
-  public challangeAmount = combineLatest([this.contract, this.update$]).pipe(mergeMap(([contract, update]) => contract.get_challenge_amount()));
+  public challangeAmount = combineLatest([this.contract, this.nearService.update$]).pipe(mergeMap(([contract, update]) => contract.get_challenge_amount()));
 
   public removeChallange(id: number) {
-    this.loading$.next(true);
+    this.nearService.loading$.next(true);
     this.contract.pipe(
       mergeMap(contract => contract.remove_challenge({ id: id }))
     ).subscribe(() => {
-      this.loading$.next(false);
-      this.update$.next(false);
+      this.nearService.loading$.next(false);
+      this.nearService.update$.next(false);
+    })
+  }
+
+  public addChallangeReward(id: number, amount: string) {
+    this.nearService.loading$.next(true)
+    return this.contract.pipe(
+      mergeMap(contract => contract.add_challenge_reward({ id: id }, undefined, amount))
+    ).subscribe(() => {
+      this.nearService.loading$.next(false);
+      this.nearService.update$.next(true);
+    })
+  }
+
+  public removeChallangeReward(id: number, amount: string) {
+    this.nearService.loading$.next(true)
+    return this.contract.pipe(
+      mergeMap(contract => contract.remove_challenge_reward({ id: id, amount: amount}))
+    ).subscribe(() => {
+      this.nearService.loading$.next(false);
+      this.nearService.update$.next(true);
     })
   }
 
   public getAddedChallenges(fromIndex: number, limit: number) {
-    return combineLatest([this.contract, this.update$]).pipe(
+    return combineLatest([this.contract, this.nearService.update$]).pipe(
       mergeMap(([contract, update]) => contract.get_added_challenges({ from_index: fromIndex, limit: limit }))
     );
   }
 
   public addChallenge(hash: string, hashType: "Md5" | "Sha1") {
-    this.loading$.next(true)
+    this.nearService.loading$.next(true)
     this.contract.pipe(
       mergeMap(contract => contract.add_challenge({ hash: hash, hash_type: hashType }))
     ).subscribe(() => {
-      this.loading$.next(false);
-      this.update$.next(false);
+      this.nearService.loading$.next(false);
+      this.nearService.update$.next(false);
     }
     )
   }
 
   public submitSolution(id: number, solution: string) {
-    this.loading$.next(true);
+    this.nearService.loading$.next(true);
     this.contract.pipe(
       mergeMap(contract => contract.claim_reward({ id: id, solution: solution }))
     ).subscribe(
       () => {
-        this.loading$.next(false);
-        this.update$.next(false)
+        this.nearService.loading$.next(false);
+        this.nearService.update$.next(false)
       }
     )
   }
 
   public getMyChallenges() {
-    return combineLatest([this.contract, this.accountId, this.update$]).pipe(
+    return combineLatest([this.contract, this.nearService.accountId, this.nearService.update$]).pipe(
       mergeMap(([contract, accountId, update]) => contract.get_challenges_by_user({ account: accountId }))
     )
   }
 
   public signIn() {
-    this.loading$.next(true)
-    combineLatest([this.walletConnection, this.contract]).pipe(
+    this.nearService.loading$.next(true)
+    combineLatest([this.nearService.walletConnection, this.contract]).pipe(
       mergeMap(([walletConnection, contract]) => {
         return walletConnection.requestSignIn(
-          { contractId: environment.contract, methodNames: ["add_challenge", "claim_reward", "remove_challenge"]},
+          { contractId: environment.contract, methodNames: ["add_challenge", "claim_reward", "remove_challenge"] },
           environment.contract
         );
       })
-    ).subscribe(() => this.loading$.next(false))
+    ).subscribe(() => this.nearService.loading$.next(false))
   };
 }

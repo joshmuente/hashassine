@@ -1,5 +1,9 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
+import { utils } from 'near-api-js';
+import { AddRewardPopupComponent } from '../add-reward-popup/add-reward-popup.component';
 import { HashassineContractService } from '../hashassine-contract.service';
 
 @Component({
@@ -10,7 +14,9 @@ import { HashassineContractService } from '../hashassine-contract.service';
 export class ProfileComponent implements OnInit {
 
   constructor(
-    public hashassine: HashassineContractService
+    public hashassine: HashassineContractService,
+    private dialog: MatDialog,
+    private overlay: Overlay
   ) { }
 
   public length = 500;
@@ -28,12 +34,25 @@ export class ProfileComponent implements OnInit {
   updateList(index: number) {
     const num = index * this.pageSize;
     this.challenges = this.hashassine.getMyChallenges()
-    console.log(this.challenges)
+  }
+
+  convertToNear(amount: number) {
+    let amountStr = amount.toLocaleString('fullwide', {useGrouping:false})
+    return utils.format.formatNearAmount(amountStr)
+  }
+
+  openRewardPopup(id: number, amount: number) {
+    const dialogRef = this.dialog.open(AddRewardPopupComponent, {
+      data: {
+        id: id,
+        amount: amount
+      },
+      width: '40%'
+    });
   }
 
   ngOnInit(): void {
     this.challenges = this.hashassine.getMyChallenges()
-    this.challenges.subscribe(console.log)
   }
 
 }

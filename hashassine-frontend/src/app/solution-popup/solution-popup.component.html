@@ -1,8 +1,8 @@
 <form (ngSubmit)="submit()" [formGroup]="dialogForm">
-  <mat-dialog-content>
+  <mat-dialog-content fxLayout="column">
     <mat-form-field>
       <mat-label form="solution">Solution</mat-label>
-      <input name="solution" formControlName="solution" matInput placeholder="Hash">
+      <input name="solution" formControlName="solution" matInput placeholder="Solution">
     </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions align="end">

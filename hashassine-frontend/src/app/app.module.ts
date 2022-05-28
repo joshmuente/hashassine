@@ -23,6 +23,12 @@ import { AddHashPopupComponent } from './add-hash-popup/add-hash-popup.component
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {HttpClientModule} from '@angular/common/http';
+import { AddRewardPopupComponent } from './add-reward-popup/add-reward-popup.component';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatRadioModule} from '@angular/material/radio';
+import { ToNear } from './near.service';
+
 
 @NgModule({
   declarations: [
@@ -30,7 +36,9 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     SolutionPopupComponent,
     HashListComponent,
     ProfileComponent,
-    AddHashPopupComponent
+    AddHashPopupComponent,
+    AddRewardPopupComponent,
+    ToNear
   ],
   imports: [
     MatIconModule,
@@ -52,7 +60,10 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatSlideToggleModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    HttpClientModule,
+    MatSliderModule,
+    MatRadioModule
   ],
   entryComponents: [SolutionPopupComponent],
   bootstrap: [AppComponent]

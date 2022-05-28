@@ -5,7 +5,8 @@
 
 <mat-action-list role="list">
     <mat-list-item role="listitem" *ngFor="let challenge of challenges | async" (click)="openSolutionPopup(challenge[0])">
-        <span matLine [textContent]="challenge[1]['hash']"></span>
+        <span matLine><span [textContent]="'Reward: ' + convertToNear(challenge[1]['amount'])"></span><mat-icon class="near-icon" svgIcon="near"></mat-icon></span>
+        <span matLine [textContent]="'Hash: ' +challenge[1]['hash']"></span>
         <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge[1]['hash'], $event)">
             <mat-icon>content_copy</mat-icon>
         </button>
