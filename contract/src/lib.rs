@@ -2,9 +2,10 @@ extern crate near_sdk;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::UnorderedMap;
 use near_sdk::env;
+use near_sdk::json_types::{U128};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{near_bindgen, AccountId, Balance, BorshStorageKey, PanicOnDefault, Promise};
-
+use std::collections::HashMap;
 type ChallengeId = u128;
 
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, PartialEq, Clone)]
@@ -91,13 +92,14 @@ impl Contract {
         self.challenge_list.insert(&id, &challenge);
     }
 
-    pub fn remove_challenge_reward(&mut self, id: ChallengeId, amount: Balance) -> Promise {
+    pub fn remove_challenge_reward(&mut self, id: ChallengeId, amount: U128) -> Promise {
         let mut challenge = self.get_challenge(id);
+        let amount_u: u128 = amount.into();
         assert!(env::predecessor_account_id() == challenge.added_by);
-        assert!(challenge.amount >= amount);
-        challenge.amount = challenge.amount - amount;
+        assert!(challenge.amount >= amount_u);
+        challenge.amount = challenge.amount - amount_u;
         self.challenge_list.insert(&id, &challenge);
-        Contract::pay(env::predecessor_account_id(), amount)
+        Contract::pay(env::predecessor_account_id(), amount_u)
     }
 
     pub fn remove_challenge(&mut self, id: ChallengeId) -> Promise {
@@ -117,7 +119,7 @@ impl Contract {
         Contract::pay(challenge.added_by, challenge.amount)
     }
 
-    pub fn get_added_challenges(&self, from_index: u64, limit: u64) -> Vec<(u128, Challenge)> {
+    pub fn get_added_challenges(&self, from_index: u64, limit: u64) -> HashMap<ChallengeId, Challenge> {
         let ids = self.challenge_list.keys_as_vector();
         let challenges = self.challenge_list.values_as_vector();
         (from_index..std::cmp::min(from_index + limit, self.challenge_list.len()))

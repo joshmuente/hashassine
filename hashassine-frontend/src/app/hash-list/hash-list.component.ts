@@ -32,10 +32,10 @@ export class HashListComponent implements OnInit {
     this.challenges = this.hashassine.getAddedChallenges(num, num + 10);
   }
 
-  openSolutionPopup(id: number) {
+  openSolutionPopup(id: string) {
     const dialogRef = this.dialog.open(SolutionPopupComponent, {
       data: {
-        id: id
+        id: parseInt(id)
       },
       width: '40%'
     });

@@ -4,10 +4,10 @@
 </mat-paginator>
 
 <mat-action-list role="list">
-    <mat-list-item role="listitem" *ngFor="let challenge of challenges | async" (click)="openSolutionPopup(challenge[0])">
-        <span matLine><span [textContent]="'Reward: ' + convertToNear(challenge[1]['amount'])"></span><mat-icon class="near-icon" svgIcon="near"></mat-icon></span>
-        <span matLine [textContent]="'Hash: ' +challenge[1]['hash']"></span>
-        <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge[1]['hash'], $event)">
+    <mat-list-item role="listitem" *ngFor="let challenge of challenges | async | keyvalue" (click)="openSolutionPopup(challenge.key)">
+        <span matLine><span [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span><mat-icon class="near-icon" svgIcon="near"></mat-icon></span>
+        <span matLine [textContent]="'Hash: ' + challenge.value.hash"></span>
+        <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge.value.hash, $event)">
             <mat-icon>content_copy</mat-icon>
         </button>
     </mat-list-item>

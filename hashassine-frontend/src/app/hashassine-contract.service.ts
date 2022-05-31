@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Contract } from 'near-api-js';
 
 interface IHashassine extends Contract {
-  get_added_challenges({ }): Observable<[]>,
+  get_added_challenges({ }): Observable<ChallangeMap>,
   get_challenge_amount(): Observable<number>,
   add_challenge({ }): Observable<[]>,
   claim_reward({ }): Observable<any>,
@@ -14,6 +14,19 @@ interface IHashassine extends Contract {
   remove_challenge({ }): Observable<any>,
   add_challenge_reward(args: {}, gas?: number, deposit?: string): Observable<any>,
   remove_challenge_reward(args: {}): Observable<any>
+}
+
+type hash = "Md5" | "Sha1"
+
+type Challange = {
+  added_by: number,
+  hash: string,
+  hash_type: hash,
+  amount: number,
+}
+
+type ChallangeMap  = {
+  [key: number]: Challange
 }
 
 @Injectable({
@@ -58,6 +71,7 @@ export class HashassineContractService {
   }
 
   public removeChallangeReward(id: number, amount: string) {
+    console.log(amount);
     this.nearService.loading$.next(true)
     return this.contract.pipe(
       mergeMap(contract => contract.remove_challenge_reward({ id: id, amount: amount}))
@@ -107,7 +121,7 @@ export class HashassineContractService {
     combineLatest([this.nearService.walletConnection, this.contract]).pipe(
       mergeMap(([walletConnection, contract]) => {
         return walletConnection.requestSignIn(
-          { contractId: environment.contract, methodNames: ["add_challenge", "claim_reward", "remove_challenge"] },
+          { contractId: environment.contract, methodNames: ["add_challenge", "claim_reward", "remove_challenge", "add_challenge_reward", "remove_challenge_reward"] },
           environment.contract
         );
       })
