@@ -4,7 +4,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { HashassineContractService } from '../hashassine-contract.service';
 import { SolutionPopupComponent } from '../solution-popup/solution-popup.component';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { utils } from 'near-api-js';
 
 @Component({

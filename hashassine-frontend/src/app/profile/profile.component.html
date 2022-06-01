@@ -7,11 +7,14 @@
             <mat-icon class="near-icon" svgIcon="near"></mat-icon>
         </span>
         <span matLine [textContent]="'Hash: ' + challenge[1].hash"></span>
-        <button mat-icon-button fxFlexAlign="center end" (click)="hashassine.removeChallange(challenge[0])">
-            <mat-icon>delete_forever</mat-icon>
+        <button mat-icon-button fxFlexAlign="center end" (click)="hashassine.removeChallange(challenge[0])" matTooltip="Delete Hash">
+            <mat-icon svgIcon="delete-forever"></mat-icon>
         </button>
-        <button (click)="openRewardPopup(challenge[0], challenge[1]['amount'])" mat-icon-button fxFlexAlign="center end">
-            <mat-icon>money</mat-icon>
+        <button (click)="openRewardPopup(challenge[0], challenge[1]['amount'])" mat-icon-button fxFlexAlign="center end" matTooltip="Deposit / Withdraw Reward">
+            <mat-icon svgIcon="cash-multiple"></mat-icon>
+        </button>
+        <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge[1]['hash'], $event)" matTooltip="Copy Hash to Clipboard">
+            <mat-icon svgIcon="content-copy"></mat-icon>
         </button>
     </mat-list-item>
 </mat-action-list>

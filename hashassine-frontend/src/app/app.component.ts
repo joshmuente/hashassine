@@ -29,7 +29,7 @@ export class AppComponent {
 
       this.matIconRegistry.addSvgIcon(
         "near",
-        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/near.svg")
+        this.domSanitizer.bypassSecurityTrustResourceUrl("./assets/near.svg")
       );
   }
 

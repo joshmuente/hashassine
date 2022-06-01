@@ -1,10 +1,11 @@
-import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { utils } from 'near-api-js';
 import { AddRewardPopupComponent } from '../add-reward-popup/add-reward-popup.component';
 import { HashassineContractService } from '../hashassine-contract.service';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
@@ -16,7 +17,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     public hashassine: HashassineContractService,
     private dialog: MatDialog,
-    private overlay: Overlay
+    private clipboard: Clipboard,
+    private snackBar: MatSnackBar
   ) { }
 
   public length = 500;
@@ -51,8 +53,13 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  copyToClipboard(data: string, event: any) {
+    event.stopPropagation();
+    this.clipboard.copy(data);
+    this.snackBar.open('Hash copied to clipboard', undefined, {duration: 5000});
+  }
+
   ngOnInit(): void {
     this.challenges = this.hashassine.getMyChallenges()
   }
-
 }

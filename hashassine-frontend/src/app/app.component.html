@@ -8,8 +8,7 @@
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <div *ngIf="nearService.isLoggedIn | async; then username else loginButton"></div>
       <button mat-icon-button (click)="toggleTheme()">
-        <mat-icon [textContent]="document.body.classList.contains('theme-alternate') ? 'dark_mode' : 'light_mode'">
-          light_mode</mat-icon>
+        <mat-icon [svgIcon]="document.body.classList.contains('theme-alternate') ? 'weather-night' : 'white-balance-sunny'"></mat-icon>
       </button>
     </div>
   </mat-toolbar>
@@ -26,8 +25,8 @@
       <mat-card-content>
         <app-profile></app-profile>
       </mat-card-content>
-      <button mat-fab fxFlexAlign="end" (click)="openAddHashPopup()">
-        <mat-icon>add_box</mat-icon>
+      <button mat-icon-button fxFlexAlign="end" (click)="openAddHashPopup()" matTooltip="Add new Hash">
+        <mat-icon svgIcon="shape-rectangle-plus"></mat-icon>
       </button>
     </mat-card>
   </div>

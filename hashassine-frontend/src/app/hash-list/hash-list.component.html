@@ -1,14 +1,20 @@
-
-<mat-paginator (page)="handlePageEvent($event)" [length]="length | async" [pageSize]="pageSize" showFirstLastButtons="true"
-    [pageIndex]="pageIndex" aria-label="Select page">
+<mat-paginator (page)="handlePageEvent($event)" [length]="length | async" [pageSize]="pageSize"
+    showFirstLastButtons="true" [pageIndex]="pageIndex" aria-label="Select page">
 </mat-paginator>
 
 <mat-action-list role="list">
-    <mat-list-item role="listitem" *ngFor="let challenge of challenges | async | keyvalue" (click)="openSolutionPopup(challenge.key)">
-        <span matLine><span [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span><mat-icon class="near-icon" svgIcon="near"></mat-icon></span>
+    <mat-list-item role="listitem" *ngFor="let challenge of challenges | async | keyvalue">
+        <span matLine><span [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span>
+            <mat-icon class="near-icon" svgIcon="near"></mat-icon>
+        </span>
         <span matLine [textContent]="'Hash: ' + challenge.value.hash"></span>
-        <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge.value.hash, $event)">
-            <mat-icon>content_copy</mat-icon>
+        <button mat-icon-button fxFlexAlign="center end" (click)="openSolutionPopup(challenge.key)"
+            matTooltip="Submit Solution">
+            <mat-icon svgIcon="email-fast-outline"></mat-icon>
+        </button>
+        <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge.value.hash, $event)"
+            matTooltip="Copy Hash to Clipboard">
+            <mat-icon svgIcon="content-copy"></mat-icon>
         </button>
     </mat-list-item>
 </mat-action-list>

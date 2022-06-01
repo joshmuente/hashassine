@@ -21,6 +21,7 @@
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
+    "@mdi/angular-material": "^6.7.96",
     "near-api-js": "^0.44.2",
     "normalize.css": "^8.0.1",
     "rxjs": "~7.4.0",
