@@ -33,10 +33,10 @@
 </div>
 
 <ng-template #username>
-  <button mat-stroked-button (click)="nearService.signOut()"
+  <button matTooltip="Logout" mat-stroked-button (click)="nearService.signOut()"
     [textContent]="(nearService.accountId | async)  ? (nearService.accountId | async) : 'loading...'">loading...</button>
 </ng-template>
 
 <ng-template #loginButton>
-  <button mat-raised-button (click)="hashassine.signIn()">Login</button>
+  <button matTooltip="Login" mat-raised-button (click)="hashassine.signIn()">Login</button>
 </ng-template>
