@@ -3,17 +3,3 @@
   box-sizing: border-box;
   height: 100vh;
 }
-
-@keyframes glow {
-  0% {
-    text-shadow: 0 0 500px rgb(0, 0, 0);
-  }
-
-  100% {
-    text-shadow: 0 0 100px white;
-  }
-  
-  100% {
-    text-shadow: 0 0 10px white;
-  }
-}
