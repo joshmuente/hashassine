@@ -159,7 +159,7 @@ impl Contract {
             Some(challenge_ids) => {
                 let ids = challenge_ids;
                 let challenges: Vec<Challenge> = ids.iter().map(|&x| self.get_challenge(x)).collect();
-                let paginated: HashMap<ChallengeId, Challenge> = (from_index..std::cmp::min(from_index + limit, self.challenge_list.len()))
+                let paginated: HashMap<ChallengeId, Challenge> = (from_index..std::cmp::min(from_index + limit, challenges.len() as u64))
                     .map(|index| (ids.get(index as usize).unwrap().clone(), challenges.get(index as usize).unwrap().clone()))
                     .collect();
                 return (challenges.len(), paginated);
