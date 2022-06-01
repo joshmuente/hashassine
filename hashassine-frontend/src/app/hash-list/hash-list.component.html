@@ -1,16 +1,30 @@
 <mat-paginator (page)="handlePageEvent($event)" [length]="length | async" [pageSize]="pageSize"
     showFirstLastButtons="true" [pageIndex]="pageIndex" aria-label="Select page">
 </mat-paginator>
+<mat-radio-group fxLayout="row" fxLayoutAlign="space-around center" [(ngModel)]="filter" (change)="onFilterChange($event)">
+    <mat-radio-button class="example-margin" [value]="undefined">
+        All
+    </mat-radio-button>
+    <mat-radio-button class="example-margin" value="Solved">
+        Solved
+    </mat-radio-button>
+    <mat-radio-button class="example-margin" value="Unsolved">
+        Unsolved
+    </mat-radio-button>
+</mat-radio-group>
 
 <mat-action-list role="list">
     <mat-list-item role="listitem" *ngFor="let challenge of challenges | async | keyvalue; let last = last">
-        <span matLine fxLayout="row" fxLayoutAlign="start center"><span [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span>
+        <span matLine fxLayout="row" fxLayoutAlign="start center"><span
+                [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span>
             <mat-icon class="near-icon" svgIcon="near"></mat-icon>
         </span>
         <span matLine [textContent]="'Type: ' + challenge.value.hash_type">
         </span>
         <span matLine [textContent]="'Hash: ' + challenge.value.hash"></span>
-        <button *ngIf="near.isLoggedIn | async" mat-icon-button fxFlexAlign="center end"
+        <span *ngIf="challenge.value.solution" matLine [textContent]="'Solution: ' + challenge.value.solution"></span>
+        <span *ngIf="challenge.value.cracked_by" matLine [textContent]="'Cracked by: ' + challenge.value.cracked_by"></span>
+        <button *ngIf="(near.isLoggedIn | async) && (!challenge.value.solution)" mat-icon-button fxFlexAlign="center end"
             (click)="openSolutionPopup(challenge.key)" matTooltip="Submit Solution">
             <mat-icon svgIcon="email-fast-outline"></mat-icon>
         </button>

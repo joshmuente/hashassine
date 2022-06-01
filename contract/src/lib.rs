@@ -16,6 +16,13 @@ pub enum HashType {
     Sha1,
 }
 
+#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, PartialEq, Clone)]
+#[serde(crate = "near_sdk::serde")]
+pub enum ChallengeFilterBy {
+    Solved,
+    Unsolved
+}
+
 #[derive(BorshStorageKey, BorshSerialize)]
 pub enum StorageKeys {
     Challenges,
@@ -38,6 +45,8 @@ pub struct Challenge {
     hash: String,
     hash_type: HashType,
     amount: Balance,
+    solution: Option<String>,
+    cracked_by: Option<AccountId>
 }
 
 // TODO: is challenge_counter the right way? what about overflows?
@@ -80,6 +89,8 @@ impl Contract {
                 hash,
                 hash_type,
                 amount,
+                solution: None,
+                cracked_by: None,
             },
         );
         match self.challenges_from_user.get(&added_by_c) {
@@ -141,11 +152,22 @@ impl Contract {
         &self,
         from_index: u64,
         limit: u64,
+        filter_by: Option<ChallengeFilterBy>
     ) -> HashMap<ChallengeId, Challenge> {
-        let ids = self.challenge_list.keys_as_vector();
-        let challenges = self.challenge_list.values_as_vector();
-        (from_index..std::cmp::min(from_index + limit, self.challenge_list.len()))
-            .map(|index| (ids.get(index).unwrap(), challenges.get(index).unwrap()))
+        let mut filtered = self.challenge_list.to_vec();
+        match filter_by {
+            Some(ChallengeFilterBy::Solved) => {
+                filtered.retain(|challenge| challenge.1.solution.is_some());
+            },
+            Some(ChallengeFilterBy::Unsolved) => {
+                filtered.retain(|challenge| !challenge.1.solution.is_some());
+            },
+            None => {}
+        }
+        let ids: Vec<ChallengeId> = filtered.iter().map(|v| v.0).collect();
+        let challenges: Vec<Challenge> = filtered.iter().map(|v| v.clone().1).collect();
+        (from_index..std::cmp::min(from_index + limit, challenges.len() as u64))
+            .map(|index| (ids.get(index as usize).unwrap().clone(), challenges.get(index as usize).unwrap().clone()))
             .collect()
     }
 
@@ -173,17 +195,11 @@ impl Contract {
     }
 
     pub fn claim_reward(&mut self, id: ChallengeId, solution: String) -> Promise {
-        let challenge: Challenge = self.get_challenge(id);
-        Contract::assert_solution_correct(challenge.clone(), solution);
-        self.challenge_list.remove(&id);
-        match self.challenges_from_user.get(&challenge.added_by) {
-            Some(mut challenges) => {
-                challenges.retain(|&x| x != id);
-                self.challenges_from_user
-                    .insert(&challenge.added_by, &challenges);
-            }
-            None {} => {}
-        }
+        let mut challenge: Challenge = self.get_challenge(id);
+        Contract::assert_solution_correct(&challenge, &solution);
+        challenge.solution = Some(solution);
+        challenge.cracked_by = Some(env::predecessor_account_id());
+        self.challenge_list.insert(&id, &challenge);
         Contract::pay(env::predecessor_account_id(), challenge.amount)
     }
 
@@ -195,7 +211,7 @@ impl Contract {
         return challenge;
     }
 
-    fn hash(string: String, hash_type: HashType) -> String {
+    fn hash(string: &String, hash_type: &HashType) -> String {
         let computed_hash: String = match hash_type {
             HashType::Md5 => format!("{:x}", md5::compute(string)),
             HashType::Sha1 => {
@@ -214,8 +230,8 @@ impl Contract {
         self.challenges_from_user.clear()
     }
 
-    fn assert_solution_correct(challenge: Challenge, solution: String) {
-        let solution_hash = Contract::hash(solution, challenge.hash_type);
+    fn assert_solution_correct(challenge: &Challenge, solution: &String) {
+        let solution_hash = Contract::hash(&solution, &challenge.hash_type);
         assert!(solution_hash.eq(&challenge.hash))
     }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { HashassineContractService } from '../hashassine-contract.service';
+import { ChallengeFilterBy, HashassineContractService } from '../hashassine-contract.service';
 import { SolutionPopupComponent } from '../solution-popup/solution-popup.component';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -26,7 +26,12 @@ export class HashListComponent implements OnInit {
   public length = this.hashassine.challangeAmount;
   public pageSize = 10;
   public pageIndex = 0;
-  public challenges = this.hashassine.getAddedChallenges(this.pageIndex, this.pageSize);
+  public filter?: ChallengeFilterBy;
+  public challenges = this.hashassine.getAddedChallenges(this.pageIndex, this.pageSize, this.filter);
+
+  onFilterChange(event: any) {
+    this.updateList(this.pageIndex)
+  }
 
   handlePageEvent(event: PageEvent) {
     this.pageSize = event.pageSize;
@@ -36,7 +41,7 @@ export class HashListComponent implements OnInit {
 
   public updateList(index: number) {
     const num = index * this.pageSize;
-    this.challenges = this.hashassine.getAddedChallenges(num, num + 10);
+    this.challenges = this.hashassine.getAddedChallenges(num, num + 10, this.filter);
   }
 
   openSolutionPopup(id: string) {

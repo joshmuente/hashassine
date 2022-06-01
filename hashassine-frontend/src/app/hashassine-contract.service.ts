@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NearService } from './near.service';
 import * as nearAPI from "near-api-js";
-import { BehaviorSubject, combineLatest, map, mergeMap, Observable, Observer, shareReplay, Subject, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, mergeMap, Observable, Observer, shareReplay, Subject, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Contract } from 'near-api-js';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -19,11 +19,15 @@ interface IHashassine extends Contract {
 
 export type hash = "Md5" | "Sha1"
 
+export type ChallengeFilterBy = "Solved" | "Unsolved";
+
 type Challange = {
   added_by: string,
   hash: string,
   hash_type: hash,
   amount: number,
+  solution?: string,
+  cracked_by?: string
 }
 
 export type ChallangeMap  = {
@@ -98,9 +102,9 @@ export class HashassineContractService {
     )
   }
 
-  public getAddedChallenges(fromIndex: number, limit: number) {
+  public getAddedChallenges(fromIndex: number, limit: number, filter_by?: ChallengeFilterBy) {
     return combineLatest([this.contract, this.nearService.update$]).pipe(
-      mergeMap(([contract, update]) => contract.get_added_challenges({ from_index: fromIndex, limit: limit }))
+      mergeMap(([contract, update]) => contract.get_added_challenges({ from_index: fromIndex, limit: limit, filter_by: filter_by }))
     );
   }
 

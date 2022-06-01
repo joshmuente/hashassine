@@ -29,6 +29,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatRadioModule } from '@angular/material/radio';
 import { ToNear } from './near.service';
 import { MatTooltipModule } from '@angular/material/tooltip'
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import { MatTooltipModule } from '@angular/material/tooltip'
     HttpClientModule,
     MatSliderModule,
     MatRadioModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCheckboxModule
   ],
   entryComponents: [SolutionPopupComponent],
   bootstrap: [AppComponent]
