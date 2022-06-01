@@ -1,6 +1,6 @@
 # Hashassine
 Hashassine (pronounced like "hash" and "assasine" together) is a decentralized hash cracking service on the Near Blockchain.
-![image](https://user-images.githubusercontent.com/39901876/171377702-5e99557e-63b8-4555-b321-3e9e060a975e.png)
+![image](https://user-images.githubusercontent.com/39901876/171387060-6d7e5bf5-1023-4226-a88f-230f61b67386.png)
 
 
 ## How does it work
