@@ -1,19 +1,22 @@
-<mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" showFirstLastButtons="true"
+<mat-paginator (page)="handlePageEvent($event)" [length]="length | async" [pageSize]="pageSize" showFirstLastButtons="true"
     [pageIndex]="pageIndex" aria-label="Select page">
 </mat-paginator>
 <mat-action-list role="list">
-    <mat-list-item role="listitem" *ngFor="let challenge of challenges | async">
-        <span matLine><span [textContent]="'Reward: ' + convertToNear(challenge[1]['amount'])"></span>
+    <mat-list-item role="listitem" *ngFor="let challenge of challenges | async | keyvalue">
+        <span matLine fxLayout="row" fxLayoutAlign="start center">
+            <span [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span>
             <mat-icon class="near-icon" svgIcon="near"></mat-icon>
         </span>
-        <span matLine [textContent]="'Hash: ' + challenge[1].hash"></span>
-        <button mat-icon-button fxFlexAlign="center end" (click)="hashassine.removeChallange(challenge[0])" matTooltip="Delete Hash">
+        <span matLine [textContent]="'Type: ' + challenge.value.hash_type">
+        </span>
+        <span matLine [textContent]="'Hash: ' + challenge.value.hash"></span>
+        <button mat-icon-button fxFlexAlign="center end" (click)="hashassine.removeChallange(toInt(challenge.key))" matTooltip="Delete Hash">
             <mat-icon svgIcon="delete-forever"></mat-icon>
         </button>
-        <button (click)="openRewardPopup(challenge[0], challenge[1]['amount'])" mat-icon-button fxFlexAlign="center end" matTooltip="Deposit / Withdraw Reward">
+        <button (click)="openRewardPopup(toInt(challenge.key), challenge.value.amount)" mat-icon-button fxFlexAlign="center end" matTooltip="Deposit / Withdraw Reward">
             <mat-icon svgIcon="cash-multiple"></mat-icon>
         </button>
-        <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge[1]['hash'], $event)" matTooltip="Copy Hash to Clipboard">
+        <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge.value.hash, $event)" matTooltip="Copy Hash to Clipboard">
             <mat-icon svgIcon="content-copy"></mat-icon>
         </button>
     </mat-list-item>

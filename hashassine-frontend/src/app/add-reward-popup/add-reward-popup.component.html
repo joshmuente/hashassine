@@ -1,18 +1,24 @@
 <form (ngSubmit)="submit()" [formGroup]="dialogForm">
     <div fxLayout="column">
-        <span>Available in Wallet: <span [textContent]="max | async | toNear"></span><mat-icon class="near-icon" svgIcon="near"></mat-icon></span>
-        <span>Deposited: <span [textContent]="currently_deposited | toNear"></span><mat-icon class="near-icon" svgIcon="near"></mat-icon></span>
+        
+        <span fxLayout="row" fxLayoutAlign="start center">
+            <span [textContent]="'Available in Wallet: ' + (nearService.balance$ | async | toNear)"></span>
+            <mat-icon class="near-icon" svgIcon="near"></mat-icon>
+        </span>
+        <span fxLayout="row" fxLayoutAlign="start center">
+            <span [textContent]="'Deposited: ' + (currently_deposited | toNear)"></span>
+            <mat-icon class="near-icon" svgIcon="near"></mat-icon>
+        </span>
         <mat-form-field>
             <mat-label form="value">Value</mat-label>
-            <input name="value" matInput [(ngModel)]="outValue" formControlName="outValue" placeholder="Value">
+            <input name="value" matInput formControlName="outValue" placeholder="Value">
         </mat-form-field>
-        <mat-slider [(ngModel)]="outValue" [max]="action === 'deposit' ? (max | async | toNear) : currently_deposited | toNear"
-            (input)="onInputChange($event)" [ngModelOptions]="{standalone: true}"></mat-slider>
-        <mat-radio-group fxLayout="row" fxLayoutGap="10px" [(ngModel)]="action" [ngModelOptions]="{standalone: true}">
+        <mat-slider (input)="onSliderChange($event)" [max]="max | async | toNear"></mat-slider>
+        <mat-radio-group fxLayout="row" fxLayoutGap="10px" formControlName="action">
             <mat-radio-button [value]="'deposit'">
                 Deposit
             </mat-radio-button>
-            <mat-radio-button [value]="'withdraw'">
+            <mat-radio-button [value]="'withdraw'" [disabled]="currently_deposited <= 0">
                 Withdraw
             </mat-radio-button>
         </mat-radio-group>

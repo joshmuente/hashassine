@@ -3,9 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { utils } from 'near-api-js';
 import { AddRewardPopupComponent } from '../add-reward-popup/add-reward-popup.component';
-import { HashassineContractService } from '../hashassine-contract.service';
+import { ChallangeMap, ChallangeResponse, HashassineContractService } from '../hashassine-contract.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { map, mapTo, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -20,22 +21,23 @@ export class ProfileComponent implements OnInit {
     private clipboard: Clipboard,
     private snackBar: MatSnackBar
   ) { }
-
-  public length = 500;
   public pageSize = 10;
+  public length = this.hashassine.getMyChallenges(0, this.pageSize).pipe(
+    map<ChallangeResponse, number>(challenges => challenges[0])
+  )
   public pageIndex = 0;
-  public challenges: any;
+  public challenges: Observable<ChallangeMap> | undefined;
 
   handlePageEvent(event: PageEvent) {
-    this.length = event.length;
-    this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
     this.updateList(this.pageIndex);
   }
 
   updateList(index: number) {
     const num = index * this.pageSize;
-    this.challenges = this.hashassine.getMyChallenges()
+    this.challenges = this.hashassine.getMyChallenges(num, this.pageSize).pipe(
+      map<ChallangeResponse, ChallangeMap>(challenges => challenges[1])
+    )
   }
 
   convertToNear(amount: number) {
@@ -59,7 +61,13 @@ export class ProfileComponent implements OnInit {
     this.snackBar.open('Hash copied to clipboard', undefined, {duration: 5000});
   }
 
+  toInt(str: string): number {
+    return parseInt(str)
+  }
+
   ngOnInit(): void {
-    this.challenges = this.hashassine.getMyChallenges()
+    this.challenges = this.hashassine.getMyChallenges(0, this.pageSize).pipe(
+      map<ChallangeResponse, ChallangeMap>(challenges => challenges[1])
+    )
   }
 }

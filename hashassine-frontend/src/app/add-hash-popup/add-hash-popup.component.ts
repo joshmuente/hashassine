@@ -22,18 +22,18 @@ export class AddHashPopupComponent implements OnInit {
       if (hashType == 'Sha1') {
         regex = new RegExp('^[a-fA-F0-9]{40}$')
       }
-      
-     if (!regex.test(hash)) {
-       return {'error': 'error'}
-     }
-     return null
-    } 
+
+      if (!regex.test(hash)) {
+        return { 'error': 'error' }
+      }
+      return null
+    }
   }
 
   public dialogForm = this.formBuilder.group({
     hash: ["", Validators.required],
     hashType: ["", Validators.required]
-  }, {validators: [this.hashValidator()], updateOn: 'change'});
+  }, { validators: [this.hashValidator()], updateOn: 'change' });
 
   constructor(private formBuilder: FormBuilder,
     private hashassine: HashassineContractService) { }

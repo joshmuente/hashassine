@@ -3,13 +3,15 @@
 </mat-paginator>
 
 <mat-action-list role="list">
-    <mat-list-item role="listitem" *ngFor="let challenge of challenges | async | keyvalue">
-        <span matLine><span [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span>
+    <mat-list-item role="listitem" *ngFor="let challenge of challenges | async | keyvalue; let last = last">
+        <span matLine fxLayout="row" fxLayoutAlign="start center"><span [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span>
             <mat-icon class="near-icon" svgIcon="near"></mat-icon>
         </span>
+        <span matLine [textContent]="'Type: ' + challenge.value.hash_type">
+        </span>
         <span matLine [textContent]="'Hash: ' + challenge.value.hash"></span>
-        <button mat-icon-button fxFlexAlign="center end" (click)="openSolutionPopup(challenge.key)"
-            matTooltip="Submit Solution">
+        <button *ngIf="near.isLoggedIn | async" mat-icon-button fxFlexAlign="center end"
+            (click)="openSolutionPopup(challenge.key)" matTooltip="Submit Solution">
             <mat-icon svgIcon="email-fast-outline"></mat-icon>
         </button>
         <button mat-icon-button fxFlexAlign="center end" (click)="copyToClipboard(challenge.value.hash, $event)"

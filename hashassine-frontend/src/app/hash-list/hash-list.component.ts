@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { HashassineContractService } from '../hashassine-contract.service';
@@ -6,6 +6,7 @@ import { SolutionPopupComponent } from '../solution-popup/solution-popup.compone
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { utils } from 'near-api-js';
+import { NearService } from '../near.service';
 
 @Component({
   selector: 'app-hash-list',
@@ -13,8 +14,14 @@ import { utils } from 'near-api-js';
   styleUrls: ['./hash-list.component.scss']
 })
 export class HashListComponent implements OnInit {
-
-  constructor(public hashassine: HashassineContractService, private dialog: MatDialog, private clipboard: Clipboard, private snackBar: MatSnackBar) { }
+  
+  constructor(
+    public near: NearService,
+    public hashassine: HashassineContractService,
+    private dialog: MatDialog,
+    private clipboard: Clipboard,
+    private snackBar: MatSnackBar)
+    { }
 
   public length = this.hashassine.challangeAmount;
   public pageSize = 10;
@@ -42,17 +49,16 @@ export class HashListComponent implements OnInit {
   }
 
   convertToNear(amount: number) {
-    let amountStr = amount.toLocaleString('fullwide', {useGrouping:false});
+    let amountStr = amount.toLocaleString('fullwide', { useGrouping: false });
     return utils.format.formatNearAmount(amountStr);
   }
 
   copyToClipboard(data: string, event: any) {
     event.stopPropagation();
     this.clipboard.copy(data);
-    this.snackBar.open('Hash copied to clipboard', undefined, {duration: 5000});
+    this.snackBar.open('Hash copied to clipboard', undefined, { duration: 5000 });
   }
 
   ngOnInit(): void {
   }
-
 }
