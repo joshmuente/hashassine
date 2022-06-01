@@ -13,7 +13,7 @@
             </mat-select>
         </mat-form-field>
     </mat-dialog-content>
-    <mat-dialog-actions align="end">
-        <button type="submit" mat-button mat-dialog-close tabindex="-1">Submit</button>
+    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end">
+        <button [disabled]="dialogForm.invalid" type="submit" mat-button mat-dialog-close tabindex="-1">Submit</button>
     </mat-dialog-actions>
 </form>

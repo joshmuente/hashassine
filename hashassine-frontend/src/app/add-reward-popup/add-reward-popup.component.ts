@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSliderChange } from '@angular/material/slider';
 import { utils } from 'near-api-js';
@@ -35,7 +35,7 @@ export class AddRewardPopupComponent implements OnInit {
   }
 
   public dialogForm = this.formBuilder.group({
-    outValue: [""]
+    outValue: ["", Validators.required]
   });
 
   public stringToInt(str: string) {

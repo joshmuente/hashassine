@@ -16,7 +16,7 @@ interface IHashassine extends Contract {
   remove_challenge_reward(args: {}): Observable<any>
 }
 
-type hash = "Md5" | "Sha1"
+export type hash = "Md5" | "Sha1"
 
 type Challange = {
   added_by: number,
@@ -71,7 +71,6 @@ export class HashassineContractService {
   }
 
   public removeChallangeReward(id: number, amount: string) {
-    console.log(amount);
     this.nearService.loading$.next(true)
     return this.contract.pipe(
       mergeMap(contract => contract.remove_challenge_reward({ id: id, amount: amount}))

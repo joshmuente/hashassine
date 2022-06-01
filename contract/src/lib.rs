@@ -6,6 +6,7 @@ use near_sdk::json_types::{U128};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{near_bindgen, AccountId, Balance, BorshStorageKey, PanicOnDefault, Promise};
 use std::collections::HashMap;
+use regex::Regex;
 type ChallengeId = u128;
 
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, PartialEq, Clone)]
@@ -52,9 +53,22 @@ impl Contract {
         }
     }
 
-    // TODO: find a way to validate hashe types
+    fn validate_hash(&self, hash: &String, hash_type: &HashType) {
+        let regex: Regex;
+        match hash_type {
+            HashType::Md5 => {
+                regex = Regex::new(r"^[a-f0-9]{32}$").unwrap();
+            },
+            HashType::Sha1 => {
+                regex = Regex::new(r"\b[0-9a-f]{5,40}\b").unwrap();
+            }
+        }
+        assert!(regex.is_match(&hash));
+    }
+
     #[payable]
     pub fn add_challenge(&mut self, hash: String, hash_type: HashType) {
+        self.validate_hash(&hash, &hash_type);
         let amount = env::attached_deposit();
         let added_by = env::predecessor_account_id();
         let id: ChallengeId = self.challenge_counter + 1;
