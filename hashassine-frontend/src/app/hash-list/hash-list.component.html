@@ -15,6 +15,7 @@
 
 <mat-action-list role="list">
     <mat-list-item role="listitem" *ngFor="let challenge of challenges | async | keyvalue; let last = last">
+        <span matLine [textContent]="'Submitted by: ' + challenge.value.added_by"></span>
         <span matLine fxLayout="row" fxLayoutAlign="start center"><span
                 [textContent]="'Reward: ' + convertToNear(challenge.value.amount)"></span>
             <mat-icon class="near-icon" svgIcon="near"></mat-icon>

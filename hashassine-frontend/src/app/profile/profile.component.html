@@ -10,7 +10,9 @@
         <span matLine [textContent]="'Type: ' + challenge.value.hash_type">
         </span>
         <span matLine [textContent]="'Hash: ' + challenge.value.hash"></span>
-        <button mat-icon-button fxFlexAlign="center end" (click)="hashassine.removeChallange(toInt(challenge.key))"
+        <span *ngIf="challenge.value.solution" matLine [textContent]="'Solution: ' + challenge.value.solution"></span>
+        <span *ngIf="challenge.value.cracked_by" matLine [textContent]="'Cracked by: ' + challenge.value.cracked_by"></span>
+        <button mat-icon-button fxFlexAlign="center end" (click)="hashassine.removeChallenge(toInt(challenge.key))"
             matTooltip="Delete Hash">
             <mat-icon svgIcon="delete-forever"></mat-icon>
         </button>

@@ -56,7 +56,7 @@ export class AddRewardPopupComponent implements OnInit {
       this.hashassine.addChallangeReward(this.id, outValue)
     }
     if (action == 'withdraw') {
-      this.hashassine.removeChallangeReward(this.id, outValue)
+      this.hashassine.removeChallengeReward(this.id, outValue)
     }
   }
 

@@ -57,7 +57,7 @@ export class HashassineContractService {
 
   public challangeAmount = combineLatest([this.contract, this.nearService.update$]).pipe(mergeMap(([contract, update]) => contract.get_challenge_amount()));
 
-  public removeChallange(id: number) {
+  public removeChallenge(id: number) {
     this.nearService.loading$.next(true);
     this.contract.pipe(
       mergeMap(contract => contract.remove_challenge({ id: id }))
@@ -87,7 +87,7 @@ export class HashassineContractService {
     )
   }
 
-  public removeChallangeReward(id: number, amount: string) {
+  public removeChallengeReward(id: number, amount: string) {
     this.nearService.loading$.next(true)
     return this.contract.pipe(
       mergeMap(contract => contract.remove_challenge_reward({ id: id, amount: amount}))
