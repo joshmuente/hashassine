@@ -2,6 +2,7 @@ extern crate near_sdk;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::UnorderedMap;
 use near_sdk::env;
+use near_sdk::require;
 use near_sdk::json_types::U128;
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{near_bindgen, AccountId, Balance, BorshStorageKey, PanicOnDefault, Promise};
@@ -49,7 +50,12 @@ pub struct Challenge {
     cracked_by: Option<AccountId>
 }
 
-// TODO: is challenge_counter the right way? what about overflows?
+impl Challenge {
+    pub fn has_solution(&self) -> bool {
+        return self.cracked_by.is_some() && self.solution.is_some();
+    }
+}
+
 #[near_bindgen]
 impl Contract {
     #[init]
@@ -72,7 +78,7 @@ impl Contract {
                 regex = Regex::new(r"\b[0-9a-f]{5,40}\b").unwrap();
             }
         }
-        assert!(regex.is_match(&hash));
+        require!(regex.is_match(&hash), "Hash format wrong");
     }
 
     #[payable]
@@ -109,9 +115,10 @@ impl Contract {
     #[payable]
     pub fn add_challenge_reward(&mut self, id: ChallengeId) {
         let amount = env::attached_deposit();
-        assert!(amount > 0);
+        require!(amount > 0);
         let mut challenge = self.get_challenge(id);
-        assert!(env::predecessor_account_id() == challenge.added_by);
+        require!(challenge.has_solution() == false, "Challenge already cracked");
+        require!(env::predecessor_account_id().eq(&challenge.added_by));
         let new_amount = challenge.amount + amount;
         challenge.amount = new_amount;
         self.challenge_list.insert(&id, &challenge);
@@ -119,19 +126,20 @@ impl Contract {
 
     pub fn remove_challenge_reward(&mut self, id: ChallengeId, amount: U128) -> Promise {
         let mut challenge = self.get_challenge(id);
+        require!(challenge.has_solution() == false, "Challenge already cracked");
         let amount_u: u128 = amount.into();
-        assert!(env::predecessor_account_id() == challenge.added_by);
-        assert!(challenge.amount >= amount_u);
+        require!(env::predecessor_account_id().eq(&challenge.added_by));
+        require!(challenge.amount >= amount_u);
         challenge.amount = challenge.amount - amount_u;
         self.challenge_list.insert(&id, &challenge);
         Contract::pay(env::predecessor_account_id(), amount_u)
     }
 
-    pub fn remove_challenge(&mut self, id: ChallengeId) -> Promise {
+    pub fn remove_challenge(&mut self, id: ChallengeId) -> Option<Promise> {
         let challenge = self.get_challenge(id);
-        assert!(
-            env::predecessor_account_id() == challenge.added_by
-                || env::predecessor_account_id() == self.owner_id
+        require!(
+            env::predecessor_account_id().eq(&challenge.added_by)
+                || env::predecessor_account_id().eq(&self.owner_id)
         );
         match self
             .challenges_from_user
@@ -145,7 +153,10 @@ impl Contract {
             None {} => {}
         }
         self.challenge_list.remove(&id);
-        Contract::pay(challenge.added_by, challenge.amount)
+        if !challenge.has_solution() {
+            return Some(Contract::pay(challenge.added_by, challenge.amount));
+        }
+        return None;
     }
 
     pub fn get_added_challenges(
@@ -196,6 +207,7 @@ impl Contract {
 
     pub fn claim_reward(&mut self, id: ChallengeId, solution: String) -> Promise {
         let mut challenge: Challenge = self.get_challenge(id);
+        require!(challenge.has_solution() == false, "Challenge already cracked");
         Contract::assert_solution_correct(&challenge, &solution);
         challenge.solution = Some(solution);
         challenge.cracked_by = Some(env::predecessor_account_id());
@@ -224,7 +236,7 @@ impl Contract {
     }
 
     pub fn clear(&mut self) {
-        assert!(env::predecessor_account_id() == self.owner_id);
+        require!(env::predecessor_account_id().eq(&self.owner_id));
         self.challenge_counter = 0;
         self.challenge_list.clear();
         self.challenges_from_user.clear()
@@ -232,7 +244,7 @@ impl Contract {
 
     fn assert_solution_correct(challenge: &Challenge, solution: &String) {
         let solution_hash = Contract::hash(&solution, &challenge.hash_type);
-        assert!(solution_hash.eq(&challenge.hash))
+        require!(solution_hash.eq(&challenge.hash), "Solution wrong")
     }
 
     fn pay(user: AccountId, amount: Balance) -> Promise {
